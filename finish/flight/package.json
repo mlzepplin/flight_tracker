@@ -1,0 +1,11 @@
+{
+  "name": "flight",
+  "version": "0.0.0",
+  "description": "A flight tracker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rishabh Gupta <mlzepplin>",
+  "license": "BSD-2-Clause"
+}
