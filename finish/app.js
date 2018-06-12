@@ -35,6 +35,7 @@ module.exports = function(flights){
 	  app.use(express.errorHandler());
 	}
 
+	//WHAT TO DO FOR FOLLOWING REQUESTS
 	//GET REQUEST FOR NORMAL JSON INFO OF A FLIGHT
 	app.get('/flight/:number', routes.flight);
 
@@ -43,6 +44,9 @@ module.exports = function(flights){
 
 	//GET REQUEST TO SEE THE LIST OF ALL FLIGHTS
 	app.get('/list', routes.list);
+
+	//GET REQUEST FOR ARRIVALS PAGE
+	app.get('/arrivals', routes.arrivals);
 
 	return app;
 }

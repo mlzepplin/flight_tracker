@@ -7,7 +7,8 @@
   },
   "dependencies": {
     "express": "3.4.0",
-    "jade": "*"
+    "jade": "*",
+    "mongoose": "^5.1.5"
   },
   "devDependencies": {
     "mocha": "^5.2.0",

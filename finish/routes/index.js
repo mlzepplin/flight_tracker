@@ -3,6 +3,8 @@
  * GET home page.
  */
 
+var FlightSchema = require('../schemas/flight');
+
 module.exports = function (flights) {
 	var flight = require('../flight');
 
@@ -29,7 +31,20 @@ module.exports = function (flights) {
 			res.status(404).json({status: 'error'});
 		} else {
 			flights[number].triggerArrive();
-			res.json({status: 'done'});
+
+			var record = new FlightSchema(flights[number].getInformation());
+			//CHECKING IF WE'RE ACTUALLY ABLE TO SAVE THINGS IN THE DATABASE
+			record.save(function(err){
+				if(err){
+					console.log(err);
+					res.status(500).json({status:'failure'});
+				}else{
+					res.json({status:'success'});
+				}
+			});
+
+
+			//res.json({status: 'done'});
 		}
 	};
 
@@ -37,6 +52,21 @@ module.exports = function (flights) {
 		res.render('list', {
 			title: 'All Flights', 
 			flights: flights});
+	};
+
+	functions.arrivals = function(req, res) {
+		FlightSchema.find()
+		.setOptions({sort: 'actualArrive'})
+		.exec(function(err, arrivals) {
+			if (err) {
+				res.status(500).json({status: 'failure'});
+			} else {
+				//SETTING RESPONSE TO RENDERING OF THE ARRIVAL PAGE
+				//THE TITLE THAT THE JADE PAGE WILL SHOW WILLL BE 'Arrivals'
+				res.render('arrivals', {title: 'Arrivals',arrivals: arrivals
+				});
+			}
+		});
 	};
 
 	return functions;
