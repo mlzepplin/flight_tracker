@@ -8,6 +8,9 @@ module.exports = function(flights,db){
 	//HENCE WE WILL BE PASSING IT 
 	var MongoStore = require('connect-mongo')(express);
 
+	//PASSPORT AUTHENTICATION
+	var passport = require('./auth');
+
 	//SEE NOW THE INDEX.JS OF ROUTES MODULE REQUIRES flights input parameter
 	var routes = require('./routes')(flights,db);
 	var http = require('http');
@@ -30,6 +33,11 @@ module.exports = function(flights,db){
 			mongooseConnection : db
 		}) 
 	}));
+
+	//Passport adds
+	app.use(passport.initialize());
+	app.use(passport.session());
+
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 
@@ -60,6 +68,16 @@ module.exports = function(flights,db){
 
 	//GET REQUEST FOR ARRIVALS PAGE
 	app.get('/arrivals', routes.arrivals);
+
+	//LOGIN 
+	app.get('/login', routes.login);
+	//POST FOR THE FORM 
+	app.post('/login', passport.authenticate('local', {
+		failureRedirect: '/login',
+		successRedirect: '/user'
+	}));
+
+	app.get('/user', routes.user);
 
 	return app;
 }
