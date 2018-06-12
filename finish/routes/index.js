@@ -16,6 +16,7 @@ module.exports = function (flights) {
 
 	functions.flight = function(req, res){
 		var number = req.param('number');
+		req.session.lastNumber = number;
 
 		if (typeof flights[number] === 'undefined') {
 			res.status(404).json({status: 'error'});
@@ -63,7 +64,8 @@ module.exports = function (flights) {
 			} else {
 				//SETTING RESPONSE TO RENDERING OF THE ARRIVAL PAGE
 				//THE TITLE THAT THE JADE PAGE WILL SHOW WILLL BE 'Arrivals'
-				res.render('arrivals', {title: 'Arrivals',arrivals: arrivals
+				res.render('arrivals', {title: 'Arrivals',arrivals: arrivals,
+					lastNumber: req.session.lastNumber
 				});
 			}
 		});

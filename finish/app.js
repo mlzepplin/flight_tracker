@@ -2,11 +2,14 @@
 /**
  * Module dependencies.
  */
-module.exports = function(flights){
+module.exports = function(flights,db){
 	var express = require('express');
+	//BEFORE WE'RE ABLE TO STORE THE SESSION IN MONGO, WE'LL STORE IT INTO EXPRESS
+	//HENCE WE WILL BE PASSING IT 
+	var MongoStore = require('connect-mongo')(express);
 
 	//SEE NOW THE INDEX.JS OF ROUTES MODULE REQUIRES flights input parameter
-	var routes = require('./routes')(flights);
+	var routes = require('./routes')(flights,db);
 	var http = require('http');
 	var path = require('path');
 	var app = express();
@@ -17,6 +20,16 @@ module.exports = function(flights){
 	app.set('view engine', 'jade');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
+	//MIDDLEWARE COOKIEPARSER, YOU HAVE TO USE IT EVEN IF DONING SESSION ALONE
+	//AS SESSION IS ALSO BASICALLY A COOKIE
+	//AND BEFORE WE USE SESSION, WE HAVE TO USE COOKIEPARSER
+	app.use(express.cookieParser());
+	app.use(express.session({
+		secret : 'random secret key',
+		store  :  new MongoStore({
+			mongooseConnection : db
+		}) 
+	}));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 
