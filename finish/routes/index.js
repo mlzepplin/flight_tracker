@@ -8,8 +8,6 @@ var flights = require('../data');
 var flight = require('../flight');
 
 for(var number in flights) {
-	//ME: YOU PROVIDE IN JSON DATA, THIS RETURNS A FLIGHT OBJECT
-	//USING THE FACTORY (PARAMETERISED CONSTRUCTOR) IN THE flight->index.js!!
 	flights[number] = flight(flights[number]);
 }
 
@@ -21,4 +19,21 @@ exports.flight = function(req, res){
 	} else {
 		res.json(flights[number].getInformation());
 	}
+};
+
+exports.arrived = function (req, res) {
+	var number = req.param('number');
+
+	if (typeof flights[number] === 'undefined') {
+		res.status(404).json({status: 'error'});
+	} else {
+		flights[number].triggerArrive();
+		res.json({status: 'done'});
+	}
+};
+
+exports.list = function (req, res) {
+	res.render('list', {
+		title: 'All Flights', 
+		flights: flights});
 };

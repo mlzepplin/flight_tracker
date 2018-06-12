@@ -18,6 +18,14 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
+
+//ME: THE ADDED MIDDLEWARE
+app.use(function (req, res, next) {
+	res.set('X-Powered-By', 'Flight Tracker');
+	next();
+});
+
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -26,7 +34,14 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+//GET REQUEST FOR NORMAL JSON INFO OF A FLIGHT
 app.get('/flight/:number', routes.flight);
+
+//PUT REQUEST TO UPDATE THE ARRIVAL TIME OF FLIGHT
+app.put('/flight/:number/arrived', routes.arrived);
+
+//GET REQUEST TO SEE THE LIST OF ALL FLIGHTS
+app.get('/list', routes.list);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
